@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";//import useState and useEffect from react
 import {
   Cloud,
   CloudRain,
@@ -8,16 +8,17 @@ import {
   Eye,
   Gauge,
   Search,
-} from "lucide-react";
+} from "lucide-react";//import icons from lucide-react
 
 function Weather() {
-  const [weatherData, setWeatherData] = useState(null);
-  const [forecast, setForecast] = useState(null);
-  const [location, setLocation] = useState("Pune");
-  const [searchInput, setSearchInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [weatherData, setWeatherData] = useState(null);//state to store weather data
+  const [forecast, setForecast] = useState(null);//state to store forecast data
+  const [location, setLocation] = useState("Pune");//state to store location
+  const [searchInput, setSearchInput] = useState("");//state to store search input
+  const [loading, setLoading] = useState(false);//state to store loading status
+  const [error, setError] = useState("");//state to store error message
 
+  //function to fetch weather data by coordinates
   const fetchWeatherByCoords = async (lat, lon) => {
     try {
       setLoading(true);
@@ -46,6 +47,7 @@ function Weather() {
     }
   };
 
+  //function to search for a location
   const searchLocation = async () => {
     if (!searchInput.trim()) return;
 
@@ -56,8 +58,11 @@ function Weather() {
       const geoResponse = await fetch(
         `https://geocoding-api.open-meteo.com/v1/search?name=${searchInput}&count=1&language=en&format=json`
       );
+      console.log("Response without json:", geoResponse);
 
       const geoData = await geoResponse.json();
+
+      console.log("Response with json:", geoData);
 
       if (geoData.results && geoData.results.length > 0) {
         const result = geoData.results[0];
@@ -79,6 +84,7 @@ function Weather() {
     }
   };
 
+  //function to get weather icon based on weather code
   const getWeatherIcon = (weatherCode) => {
     if (!weatherCode) return <Cloud className="w-12 h-12" />;
 
@@ -97,7 +103,8 @@ function Weather() {
     }
     return <Cloud className="w-12 h-12 text-gray-400" />;
   };
-
+ 
+  //function to get weather description based on weather code
   const getWeatherDescription = (weatherCode) => {
     if (!weatherCode) return "Unknown";
 
@@ -148,25 +155,25 @@ function Weather() {
         <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-2xl p-4 mb-6 shadow-xl">
           <div className="flex gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 w-5 h-5 text-white opacity-70" />
+              <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400 opacity-70" />
               <input
                 type="text"
                 placeholder="Search for a city..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && searchLocation()}
-                className="w-full pl-10 pr-4 py-2 bg-white bg-opacity-30 text-white placeholder-gray-200 rounded-lg focus:outline-none focus:bg-opacity-50 border border-white border-opacity-30"
+                className="w-full pl-10 pr-4 py-2 bg-white bg-opacity-30 text-slate-900 placeholder-gray-400 rounded-lg focus:outline-none focus:bg-opacity-50 border border-white border-opacity-30"
               />
             </div>
             <button
               onClick={searchLocation}
               disabled={loading}
-              className="bg-white text-blue-500 px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
+              className="bg-slate-100 text-blue-500 px-6 py-2 rounded-lg font-semibold hover:bg-blue-200 hover:cursor-pointer transition disabled:opacity-50"
             >
               {loading ? "Searching..." : "Search"}
             </button>
           </div>
-          {error && <p className="text-red-200 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
         </div>
 
         {loading && !weatherData ? (
@@ -180,8 +187,8 @@ function Weather() {
             <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 mb-6 shadow-2xl border border-white border-opacity-30">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-white mb-1">{location}</h2>
-                  <p className="text-blue-100">
+                  <h2 className="text-3xl font-bold text-slate-700 mb-1">{location}</h2>
+                  <p className="text-blue-400">
                     {new Date().toLocaleDateString("en-US", {
                       weekday: "long",
                       month: "short",
@@ -190,10 +197,10 @@ function Weather() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-6xl font-bold text-white">
+                  <p className="text-6xl font-bold text-slate-700">
                     {Math.round(weatherData.current.temperature_2m)}°
                   </p>
-                  <p className="text-blue-100">
+                  <p className="text-blue-400">
                     Feels like {Math.round(weatherData.current.apparent_temperature)}°
                   </p>
                 </div>
@@ -202,10 +209,10 @@ function Weather() {
               <div className="flex items-center gap-4 mb-8">
                 {getWeatherIcon(weatherData.current.weather_code)}
                 <div>
-                  <p className="text-2xl text-white font-semibold">
+                  <p className="text-2xl text-gray-600 font-semibold">
                     {getWeatherDescription(weatherData.current.weather_code)}
                   </p>
-                  <p className="text-blue-100">Clouds: {weatherData.current.cloud_cover}%</p>
+                  <p className="text-blue-400">Clouds: {weatherData.current.cloud_cover}%</p>
                 </div>
               </div>
 
@@ -213,40 +220,40 @@ function Weather() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <div className="flex items-center gap-2 mb-2">
-                    <Droplets className="w-5 h-5 text-blue-200" />
-                    <span className="text-blue-100 text-sm">Humidity</span>
+                    <Droplets className="w-5 h-5 text-blue-400" />
+                    <span className="text-blue-400 text-sm">Humidity</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-gray-600">
                     {weatherData.current.relative_humidity_2m}%
                   </p>
                 </div>
 
                 <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <div className="flex items-center gap-2 mb-2">
-                    <Wind className="w-5 h-5 text-blue-200" />
-                    <span className="text-blue-100 text-sm">Wind Speed</span>
+                    <Wind className="w-5 h-5 text-blue-400" />
+                    <span className="text-blue-400 text-sm">Wind Speed</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-gray-600">
                     {Math.round(weatherData.current.wind_speed_10m)} km/h
                   </p>
                 </div>
 
                 <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <div className="flex items-center gap-2 mb-2">
-                    <Eye className="w-5 h-5 text-blue-200" />
-                    <span className="text-blue-100 text-sm">Visibility</span>
+                    <Eye className="w-5 h-5 text-blue-400" />
+                    <span className="text-blue-400 text-sm">Visibility</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-gray-600">
                     {(weatherData.current.visibility / 1000).toFixed(1)} km
                   </p>
                 </div>
 
                 <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
                   <div className="flex items-center gap-2 mb-2">
-                    <Gauge className="w-5 h-5 text-blue-200" />
-                    <span className="text-blue-100 text-sm">Pressure</span>
+                    <Gauge className="w-5 h-5 text-blue-400" />
+                    <span className="text-blue-400 text-sm">Pressure</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-gray-600">
                     {Math.round(weatherData.current.pressure_msl)} mb
                   </p>
                 </div>
@@ -256,19 +263,19 @@ function Weather() {
             {/* Forecast */}
             {forecast && (
               <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white border-opacity-30">
-                <h3 className="text-2xl font-bold text-white mb-4">7-Day Forecast</h3>
+                <h3 className="text-2xl font-bold text-gray-600 mb-4">7-Day Forecast</h3>
                 <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
                   {forecast.times.slice(0, 7).map((date, index) => (
                     <div
                       key={index}
                       className="bg-white bg-opacity-10 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-opacity-20 transition"
                     >
-                      <p className="text-white font-semibold mb-2">
+                      <p className="text-gray-600 font-semibold mb-2">
                         {new Date(date).toLocaleDateString("en-US", {
                           weekday: "short",
                         })}
                       </p>
-                      <p className="text-xs text-blue-100 mb-3">
+                      <p className="text-xs text-blue-400 mb-3">
                         {new Date(date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
@@ -277,14 +284,14 @@ function Weather() {
                       <div className="flex justify-center mb-3">
                         {getWeatherIcon(forecast.weatherCodes[index])}
                       </div>
-                      <p className="text-white font-bold mb-1">
+                      <p className="text-gray-600 font-bold mb-1">
                         {Math.round(forecast.maxTemps[index])}°
                       </p>
-                      <p className="text-blue-100 text-sm">
+                      <p className="text-blue-400 text-sm">
                         {Math.round(forecast.minTemps[index])}°
                       </p>
                       {forecast.precipitation[index] > 0 && (
-                        <p className="text-blue-200 text-xs mt-2">
+                        <p className="text-blue-400 text-xs mt-2">
                           💧 {Math.round(forecast.precipitation[index])}mm
                         </p>
                       )}
