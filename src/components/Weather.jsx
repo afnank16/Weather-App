@@ -1,0 +1,307 @@
+import { useEffect, useState } from "react";
+import {
+  Cloud,
+  CloudRain,
+  Sun,
+  Wind,
+  Droplets,
+  Eye,
+  Gauge,
+  Search,
+} from "lucide-react";
+
+function Weather() {
+  const [weatherData, setWeatherData] = useState(null);
+  const [forecast, setForecast] = useState(null);
+  const [location, setLocation] = useState("Pune");
+  const [searchInput, setSearchInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchWeatherByCoords = async (lat, lon) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const weatherResponse = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,visibility,weather_code,wind_direction_10m,pressure_msl,apparent_temperature,uv_index,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto`
+      );
+
+      const data = await weatherResponse.json();
+      setWeatherData(data);
+
+      const dailyData = {
+        times: data.daily.time,
+        maxTemps: data.daily.temperature_2m_max,
+        minTemps: data.daily.temperature_2m_min,
+        weatherCodes: data.daily.weather_code,
+        precipitation: data.daily.precipitation_sum,
+      };
+      setForecast(dailyData);
+    } catch (error) {
+      setError("Failed to fetch weather data");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const searchLocation = async () => {
+    if (!searchInput.trim()) return;
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const geoResponse = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${searchInput}&count=1&language=en&format=json`
+      );
+
+      const geoData = await geoResponse.json();
+
+      if (geoData.results && geoData.results.length > 0) {
+        const result = geoData.results[0];
+        setLocation(
+          `${result.name}${result.admin1 ? ", " + result.admin1 : ""}${
+            result.country ? ", " + result.country : ""
+          }`
+        );
+        setSearchInput("");
+        fetchWeatherByCoords(result.latitude, result.longitude);
+      } else {
+        setError("Location not found");
+      }
+    } catch (error) {
+      setError("Error searching location");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getWeatherIcon = (weatherCode) => {
+    if (!weatherCode) return <Cloud className="w-12 h-12" />;
+
+    if (weatherCode === 0 || weatherCode === 1) {
+      return <Sun className="w-12 h-12 text-yellow-400" />;
+    } else if (weatherCode === 80 || weatherCode === 81 || weatherCode === 82) {
+      return <CloudRain className="w-12 h-12 text-blue-400" />;
+    } else if (
+      weatherCode >= 70 &&
+      weatherCode <= 78 &&
+      weatherCode !== 80 &&
+      weatherCode !== 81 &&
+      weatherCode !== 82
+    ) {
+      return <CloudRain className="w-12 h-12 text-blue-400" />;
+    }
+    return <Cloud className="w-12 h-12 text-gray-400" />;
+  };
+
+  const getWeatherDescription = (weatherCode) => {
+    if (!weatherCode) return "Unknown";
+
+    const descriptions = {
+      0: "Clear Sky",
+      1: "Mainly Clear",
+      2: "Partly Cloudy",
+      3: "Overcast",
+      45: "Foggy",
+      48: "Foggy",
+      51: "Light Drizzle",
+      53: "Drizzle",
+      55: "Heavy Drizzle",
+      61: "Slight Rain",
+      63: "Rain",
+      65: "Heavy Rain",
+      71: "Slight Snow",
+      73: "Snow",
+      75: "Heavy Snow",
+      77: "Snow Grains",
+      80: "Light Showers",
+      81: "Showers",
+      82: "Heavy Showers",
+      85: "Light Snow Showers",
+      86: "Snow Showers",
+      95: "Thunderstorm",
+      96: "Thunderstorm with Hail",
+      99: "Thunderstorm with Hail",
+    };
+
+    return descriptions[weatherCode] || "Unknown";
+  };
+
+  useEffect(() => {
+    fetchWeatherByCoords(18.5204, 73.8567); // Default: Pune
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-blue-300 to-indigo-500 p-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold text-white mb-2">Weather Dashboard</h1>
+          <p className="text-blue-100">Beautiful weather forecasts at your fingertips</p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-2xl p-4 mb-6 shadow-xl">
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 w-5 h-5 text-white opacity-70" />
+              <input
+                type="text"
+                placeholder="Search for a city..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && searchLocation()}
+                className="w-full pl-10 pr-4 py-2 bg-white bg-opacity-30 text-white placeholder-gray-200 rounded-lg focus:outline-none focus:bg-opacity-50 border border-white border-opacity-30"
+              />
+            </div>
+            <button
+              onClick={searchLocation}
+              disabled={loading}
+              className="bg-white text-blue-500 px-6 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
+          </div>
+          {error && <p className="text-red-200 text-sm mt-2">{error}</p>}
+        </div>
+
+        {loading && !weatherData ? (
+          <div className="text-center text-white">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            <p className="mt-4">Loading weather data...</p>
+          </div>
+        ) : weatherData ? (
+          <>
+            {/* Current Weather Card */}
+            <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 mb-6 shadow-2xl border border-white border-opacity-30">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-1">{location}</h2>
+                  <p className="text-blue-100">
+                    {new Date().toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-6xl font-bold text-white">
+                    {Math.round(weatherData.current.temperature_2m)}°
+                  </p>
+                  <p className="text-blue-100">
+                    Feels like {Math.round(weatherData.current.apparent_temperature)}°
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 mb-8">
+                {getWeatherIcon(weatherData.current.weather_code)}
+                <div>
+                  <p className="text-2xl text-white font-semibold">
+                    {getWeatherDescription(weatherData.current.weather_code)}
+                  </p>
+                  <p className="text-blue-100">Clouds: {weatherData.current.cloud_cover}%</p>
+                </div>
+              </div>
+
+              {/* Weather Details Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Droplets className="w-5 h-5 text-blue-200" />
+                    <span className="text-blue-100 text-sm">Humidity</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {weatherData.current.relative_humidity_2m}%
+                  </p>
+                </div>
+
+                <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Wind className="w-5 h-5 text-blue-200" />
+                    <span className="text-blue-100 text-sm">Wind Speed</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {Math.round(weatherData.current.wind_speed_10m)} km/h
+                  </p>
+                </div>
+
+                <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Eye className="w-5 h-5 text-blue-200" />
+                    <span className="text-blue-100 text-sm">Visibility</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {(weatherData.current.visibility / 1000).toFixed(1)} km
+                  </p>
+                </div>
+
+                <div className="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Gauge className="w-5 h-5 text-blue-200" />
+                    <span className="text-blue-100 text-sm">Pressure</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">
+                    {Math.round(weatherData.current.pressure_msl)} mb
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Forecast */}
+            {forecast && (
+              <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-white border-opacity-30">
+                <h3 className="text-2xl font-bold text-white mb-4">7-Day Forecast</h3>
+                <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+                  {forecast.times.slice(0, 7).map((date, index) => (
+                    <div
+                      key={index}
+                      className="bg-white bg-opacity-10 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-opacity-20 transition"
+                    >
+                      <p className="text-white font-semibold mb-2">
+                        {new Date(date).toLocaleDateString("en-US", {
+                          weekday: "short",
+                        })}
+                      </p>
+                      <p className="text-xs text-blue-100 mb-3">
+                        {new Date(date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                      <div className="flex justify-center mb-3">
+                        {getWeatherIcon(forecast.weatherCodes[index])}
+                      </div>
+                      <p className="text-white font-bold mb-1">
+                        {Math.round(forecast.maxTemps[index])}°
+                      </p>
+                      <p className="text-blue-100 text-sm">
+                        {Math.round(forecast.minTemps[index])}°
+                      </p>
+                      {forecast.precipitation[index] > 0 && (
+                        <p className="text-blue-200 text-xs mt-2">
+                          💧 {Math.round(forecast.precipitation[index])}mm
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center text-white">
+            <p>Unable to load weather data</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Weather;
