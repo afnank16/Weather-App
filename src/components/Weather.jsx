@@ -187,7 +187,7 @@ function Weather() {
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <h1 className="text-5xl font-bold text-white mb-2">Weather Dashboard</h1>
+                    <h1 className="text-5xl font-bold text-white mb-2">Weatherly</h1>
                     <p className="text-blue-100">Beautiful weather forecasts at your fingertips</p>
                 </div>
 
@@ -253,7 +253,7 @@ function Weather() {
                     <>
                         {/* Current Weather Card */}
                         <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 mb-6 shadow-2xl border border-white border-opacity-30 z-0">
-                            <div className="flex justify-between items-start mb-6">
+                            <div className="flex justify-between items-start mb-3">
                                 <div>
                                     <h2 className="text-3xl font-bold text-slate-700 mb-1">{location}</h2>
                                     <p className="text-blue-400">
@@ -274,7 +274,7 @@ function Weather() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 mb-8">
+                            <div className="flex items-center gap-4 mb-6">
                                 {getWeatherIcon(weatherData.current.weather_code)}
                                 <div>
                                     <p className="text-2xl text-gray-600 font-semibold">
