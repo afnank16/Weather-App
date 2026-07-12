@@ -13,7 +13,7 @@ import {
 function Weather() {
     const [weatherData, setWeatherData] = useState(null);//state to store weather data
     const [forecast, setForecast] = useState(null);//state to store forecast data
-    const [location, setLocation] = useState("Pune");//state to store location
+    const [location, setLocation] = useState("Pune, Maharashtra, India");//state to store location
     const [searchInput, setSearchInput] = useState("");//state to store search input
     const [citySuggestions, setCitySuggestions] = useState([]);//state to store city suggestions
     const [loading, setLoading] = useState(false);//state to store loading status
@@ -253,7 +253,7 @@ function Weather() {
                     <>
                         {/* Current Weather Card */}
                         <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-3xl p-8 mb-6 shadow-2xl border border-white border-opacity-30 z-0">
-                            <div className="flex justify-between items-start mb-3">
+                            <div className="flex justify-between items-start mb-6">
                                 <div>
                                     <h2 className="text-3xl font-bold text-slate-700 mb-1">{location}</h2>
                                     <p className="text-blue-400">
@@ -274,7 +274,7 @@ function Weather() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 mb-6">
+                            <div className="flex items-center gap-4 mb-5">
                                 {getWeatherIcon(weatherData.current.weather_code)}
                                 <div>
                                     <p className="text-2xl text-gray-600 font-semibold">
