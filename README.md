@@ -1,10 +1,14 @@
-# 🌤️ Weather Dashboard
+# 🌤️ Weatherly
 
-A beautiful, modern weather dashboard built with React, Vite, and Tailwind CSS. Get real-time weather information, 7-day forecasts, and detailed meteorological data for any location worldwide.
+A beautiful, modern weather app built with React, Vite, and Tailwind CSS. Get real-time weather information, 7-day forecasts, and detailed meteorological data for any location worldwide.
 
 ![Weather Dashboard](https://img.shields.io/badge/React-19.2-blue?style=flat-square&logo=react)
 ![Vite](https://img.shields.io/badge/Vite-7.2-blueviolet?style=flat-square&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-06B6D4?style=flat-square&logo=tailwindcss)
+
+## Preview
+
+![Home](./public/image.png)
 
 ## ✨ Features
 
@@ -28,7 +32,7 @@ A beautiful, modern weather dashboard built with React, Vite, and Tailwind CSS. 
 
 1. **Clone or navigate to the project directory**
 ```bash
-cd "Weather Dashboard"
+cd "Weather-App"
 ```
 
 2. **Install dependencies**
@@ -95,7 +99,7 @@ The app will be available at `http://localhost:5173` (or the port shown in termi
 ## 📁 Project Structure
 
 ```
-Weather Dashboard/
+Weather-App/
 ├── src/
 │   ├── components/
 │   │   └── Weather.jsx          # Main weather component
@@ -164,45 +168,14 @@ npm run lint
 
 ## 🌐 Default Location
 
-The dashboard defaults to **Pune, India** on first load. You can search for any location worldwide to change it.
-
-## ⚡ Performance
-
-- **Fast Load Times**: Optimized with Vite
-- **Minimal Bundle**: Tree-shaking removes unused code
-- **Responsive**: CSS animations and transitions
-- **Real-Time**: Instant updates on location search
-
-## 🛡️ Error Handling
-
-- Network error handling for API calls
-- Invalid location detection
-- Loading states during data fetch
-- User-friendly error messages
+The dashboard defaults to **Pune, Maharashtra, India** on first load. You can search for any location worldwide to change it.
 
 ## 📝 License
 
 This project is open source and available under the MIT License.
 
-## 🙋 Support
-
-For questions or issues:
-1. Check the browser console for error messages
-2. Ensure you have internet connectivity (required for API calls)
-3. Try searching with a different location name
-4. Clear browser cache and reload
-
-## 🌟 Future Enhancements
-
-- Hourly forecast
-- Weather alerts and warnings
-- Multiple location tracking
-- Dark/Light theme toggle
-- Weather history graphs
-- Air quality index (AQI)
-- Sunrise/sunset times
-- Local storage for favorite locations
 
 ---
 
 **Made with ❤️ using React, Vite, and Tailwind CSS**
+

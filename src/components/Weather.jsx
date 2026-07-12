@@ -336,7 +336,7 @@ function Weather() {
                                     {forecast.times.slice(0, 7).map((date, index) => (
                                         <div
                                             key={index}
-                                            className="bg-white bg-opacity-10 rounded-xl p-4 text-center backdrop-blur-sm hover:bg-opacity-20 transition"
+                                            className="bg-white bg-opacity-10 rounded-xl p-2 text-center backdrop-blur-sm hover:bg-opacity-20 transition"
                                         >
                                             <p className="text-gray-600 font-semibold mb-1">
                                                 {new Date(date).toLocaleDateString("en-US", {
