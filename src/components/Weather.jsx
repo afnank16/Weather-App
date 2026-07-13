@@ -160,7 +160,7 @@ function Weather() {
             } catch (error) {
                 console.error(error);
             }
-        }, 300);
+        }, 30); // Debounce API call by 30ms
 
         return () => clearTimeout(timer);
     }, [searchInput]);
