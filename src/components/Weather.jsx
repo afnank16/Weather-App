@@ -35,12 +35,6 @@ function Weather() {
                 `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,visibility,weather_code,wind_direction_10m,pressure_msl,apparent_temperature,uv_index,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto`
             );
 
-            if (!weatherResponse.ok) throw new Error(`Weather API responded with ${weatherResponse.status}`);
-            // and
-            if (!geoResponse.ok) throw new Error(`Geocoding API responded with ${geoResponse.status}`);
-            // and (in the suggestions effect, no throw needed, just skip)
-            if (!response.ok) return;
-
             const data = await weatherResponse.json();
             setWeatherData(data);
 
@@ -72,6 +66,13 @@ function Weather() {
             const geoResponse = await fetch(
                 `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchInput)}&count=1&language=en&format=json`
             );
+            
+            if (!weatherResponse.ok) throw new Error(`Weather API responded with ${weatherResponse.status}`);
+            // and
+            if (!geoResponse.ok) throw new Error(`Geocoding API responded with ${geoResponse.status}`);
+            // and (in the suggestions effect, no throw needed, just skip)
+            if (!response.ok) return;
+            
             const geoData = await geoResponse.json();
 
             if (geoData.results && geoData.results.length > 0) {
