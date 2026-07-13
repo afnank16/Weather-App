@@ -41,6 +41,7 @@ function Weather() {
                 precipitation: data.daily.precipitation_sum,
             };
             setForecast(dailyData);
+            setSearchInput("")
         } catch (error) {
             setError("Failed to fetch weather data");
             console.error("Error:", error);
